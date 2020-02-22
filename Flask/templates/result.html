@@ -1,0 +1,18 @@
+<!doctype html>
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static',filename='styles/theme.css') }}">
+
+<html>
+</head>
+   <body>
+      <div class="a">
+         <h1>The best job is:</h1>
+         {% for key, value in result.items() %}
+            <form action = "http://localhost:5000/result" method = "POST">
+               <p>{{ value }}</p>
+            </form>
+         {% endfor %}
+      </div>
+   </body>
+</html>
+
+
