@@ -85,8 +85,8 @@ print(query_doc_bow)
 query_doc_tf_idf = tf_idf[query_doc_bow]
 print(query_doc_tf_idf)
 
-sims = sorted(enumerate(query_doc_tf_idf)) 
-print(sims)
-for i, s in sims:
-    print(s, i, data_list[i])
+# sims = sorted(enumerate(query_doc_tf_idf)) 
+# print(sims)
+# for i, s in sims:
+#     print(s, i, data_list[i])
     
