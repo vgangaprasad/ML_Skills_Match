@@ -14,8 +14,14 @@ def train_model():
 
 @app.route("/")
 def index():
-
     return render_template('index.html')
+
+@app.route('/', methods=['Get', 'POST'])
+def my_form_post():
+    text = request.form.get('job')
+    processed_text = text.upper()
+    print (processed_text)
+    return render_template('result.html', **templateData)
 
 
 @app.route('/result',methods = ['POST', 'GET'])
@@ -53,6 +59,7 @@ if __name__ == "__main__":
         print("---------------------------------")
         print(("*Flask starting server..."
                    "please wait until server has fully started"))
+        app.debug = True
         app.run()
 
     elif mode=='model':
