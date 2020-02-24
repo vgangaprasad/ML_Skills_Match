@@ -1,16 +1,67 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<link rel="stylesheet" type="text/css" href= "{{ url_for('static',filename='styles/theme.css') }}">
+   <title> Job Finder</title>
+   <meta name"viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+   <link rel="stylesheet" type="text/css" href="../css/theme.css">
 </head>
-   <body>
-      <div class="a">
-         <h1>I can find the best job for you!!</h1>
-            <form method = "POST" action="/">
-               <p>Write your skills..</p>
-               <input type = "text"  name = "job" />
-               <button class="button button1">Submit!</button>
-            </form>
+
+<body>
+   <div class="container">
+
+      <div class="row">
+         <div class="col-lg-12">
+            <h1 class = "text-secondary text-center">I can find the best job for you!</h1>
+         </div> 
       </div>
-   </body>
+      <div class="row">
+         <div class="col-lg-12">
+            <form method="POST" action="/submitted">
+               <p>Write your skills..</p>
+               <input type="text" name="job" />
+               <button class = "btn btn-primary" id='button' type="submit" onclick='handleClick()'>Compare Test!</button>
+            </form>
+
+
+
+         </div>
+
+
+
+      </div>
+      
+      <table class="table">
+         <thead>
+            <tr>
+               <th scope="col">#</th>
+               <th scope="col">First</th>
+               <th scope="col">Last</th>
+               <th scope="col">Handle</th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr>
+               <th scope="row">1</th>
+               <td>Mark</td>
+               <td>Otto</td>
+               <td>@mdo</td>
+            </tr>
+            <tr>
+               <th scope="row">2</th>
+               <td>Jacob</td>
+               <td>Thornton</td>
+               <td>@fat</td>
+            </tr>
+            <tr>
+               <th scope="row">3</th>
+               <td>Larry</td>
+               <td>the Bird</td>
+               <td>@twitter</td>
+            </tr>
+         </tbody>
+      </table>
+</body>
+
 </html>

@@ -1,19 +1,29 @@
 import os
-from flask import Flask, flash, redirect, render_template, request, session, abort
+from flask import Flask, flash, redirect, render_template, request, session, abort, send_from_directory, current_app, jsonify
 from models.keras_first_go import KerasFirstGoModel
 from clear_bash import clear_bash
 
-app = Flask(__name__)
-cleaner=clear_bash()
+#################################################
+# Flask Setup
+#################################################
+app = Flask(__name__, static_folder='static', static_url_path='')
+
+
+# cleaner=clear_bash()
 
 def train_model():
     global first_go_model
 
     print("Train the model")
     first_go_model = KerasFirstGoModel()
+    
+
+@app.route('/<path:path>')
+def serve_page(path):
+    return send_from_directory('client', path)
 
 @app.route("/")
-def index():
+def welcome():
     return render_template('index.html')
 
 @app.route('/', methods=['Get', 'POST'])
@@ -60,7 +70,7 @@ if __name__ == "__main__":
         print(("*Flask starting server..."
                    "please wait until server has fully started"))
         app.debug = True
-        app.run()
+        app.run(use_reloader=False)
 
     elif mode=='model':
 
