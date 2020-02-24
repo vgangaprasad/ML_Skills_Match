@@ -1,63 +1,251 @@
-import json as j
+#load the data
 import csv as csv
-import sys
 import pandas as pd
-import re
-import numpy as np
-from nltk.corpus import stopwords
-import nltk
-nltk.download('stopwords')
-from nltk.stem import SnowballStemmer
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import LinearSVC
-from sklearn.pipeline import Pipeline
-from sklearn.model_selection import train_test_split
-from sklearn.feature_selection import SelectKBest, chi2
-from wordcloud import WordCloud
+from nltk.tokenize import word_tokenize
+from nltk import pos_tag
+from nltk.stem import PorterStemmer
+from nltk import pos_tag
+from nltk.stem import PorterStemmer
+
+df = pd.read_csv("csv_ML.csv")
+
+#list of keywords
+# got these keywords by looking at some examples and using existing knowledge.
+tool_keywords1 = ['python', 'pytorch', 'sql', 'mxnet', 'mlflow', 'einstein', 'theano', 'pyspark', 'solr', 'mahout', 
+ 'cassandra', 'aws', 'powerpoint', 'spark', 'pig', 'sas', 'java', 'nosql', 'docker', 'salesforce', 'scala', 'r',
+ 'c', 'c++', 'net', 'tableau', 'pandas', 'scikitlearn', 'sklearn', 'matlab', 'scala', 'keras', 'tensorflow', 'clojure',
+ 'caffe', 'scipy', 'numpy', 'matplotlib', 'vba', 'spss', 'linux', 'azure', 'cloud', 'gcp', 'mongodb', 'mysql', 'oracle', 
+ 'redshift', 'snowflake', 'kafka', 'javascript', 'qlik', 'jupyter', 'perl', 'bigquery', 'unix', 'react',
+ 'scikit', 'powerbi', 's3', 'ec2', 'lambda', 'ssrs', 'kubernetes', 'hana', 'spacy', 'tf', 'django', 'sagemaker',
+ 'seaborn', 'mllib', 'github', 'git', 'elasticsearch', 'splunk', 'airflow', 'looker', 'rapidminer', 'birt', 'pentaho', 
+ 'jquery', 'nodejs', 'd3', 'plotly', 'bokeh', 'xgboost', 'rstudio', 'shiny', 'dash', 'h20', 'h2o', 'hadoop', 'mapreduce', 
+ 'hive', 'cognos', 'angular', 'nltk', 'flask', 'node', 'firebase', 'bigtable', 'rust', 'php', 'cntk', 'lightgbm', 
+ 'kubeflow', 'rpython', 'unixlinux', 'postgressql', 'postgresql', 'postgres', 'hbase', 'dask', 'ruby', 'julia', 'tensor',
+# added r packages doesn't seem to impact the result
+ 'dplyr','ggplot2','esquisse','bioconductor','shiny','lubridate','knitr','mlr','quanteda','dt','rcrawler','caret','rmarkdown',
+ 'leaflet','janitor','ggvis','plotly','rcharts','rbokeh','broom','stringr','magrittr','slidify','rvest',
+ 'rmysql','rsqlite','prophet','glmnet','text2vec','snowballc','quantmod','rstan','swirl','datasciencer']
 
 
-csv_data = None
-rows = []
-with open('csv_ML.csv') as data_file:
-    csv_data = csv.reader(data_file, delimiter=',', quotechar='|')
-    for row in csv_data:
-        rows.append(row)
+# another set of keywords that are longer than one word.
+tool_keywords2 = set(['amazon web services', 'google cloud', 'sql server'])
 
-data = pd.read_csv("csv_ML.csv")
-data.head()
-print(data['description'].head())
-
-
-""" data = pd.DataFrame(json_data) """
-
-stemmer = SnowballStemmer('english')
-words = stopwords.words("english")
-
-data['cleaned'] = data['description'].apply(lambda x: " ".join([stemmer.stem(i) for i in re.sub("[^a-zA-Z]", " ", x).split() if i not in words]).lower())
-
-X_train, X_test, y_train, y_test = train_test_split(data['cleaned'],data.title, test_size=0.2)
-
-pipeline = Pipeline([('vect', TfidfVectorizer(ngram_range=(1, 2), stop_words="english", sublinear_tf=True)),
-                     ('chi',  SelectKBest(chi2, k=10000)),
-                     ('clf', LinearSVC(C=1.0, penalty='l1', max_iter=3000, dual=False))])
+# hard skills/knowledge required.
+skill_keywords1 = set(['statistics', 'cleansing', 'chatbot', 'cleaning', 'blockchain', 'causality', 'correlation', 'bandit', 'anomaly', 'kpi',
+ 'dashboard', 'geospatial', 'ocr', 'econometrics', 'pca', 'gis', 'svm', 'svd', 'tuning', 'hyperparameter', 'hypothesis',
+ 'salesforcecom', 'segmentation', 'biostatistics', 'unsupervised', 'supervised', 'exploratory',
+ 'recommender', 'recommendations', 'research', 'sequencing', 'probability', 'reinforcement', 'graph', 'bioinformatics',
+ 'chi', 'knn', 'outlier', 'etl', 'normalization', 'classification', 'optimizing', 'prediction', 'forecasting',
+ 'clustering', 'cluster', 'optimization', 'visualization', 'nlp', 'c#',
+ 'regression', 'logistic', 'nn', 'cnn', 'glm',
+ 'rnn', 'lstm', 'gbm', 'boosting', 'recurrent', 'convolutional', 'bayesian',
+ 'bayes'])
 
 
-model = pipeline.fit(X_train, y_train)
+# another set of keywords that are longer than one word.
+skill_keywords2 = set(['random forest', 'natural language processing', 'machine learning', 'decision tree', 'deep learning', 'experimental design',
+ 'time series', 'nearest neighbors', 'neural network', 'support vector machine', 'computer vision', 'machine vision', 'dimensionality reduction', 
+ 'text analytics', 'power bi', 'a/b testing', 'ab testing', 'chat bot', 'data mining'])
 
-vectorizer = model.named_steps['vect']
-chi = model.named_steps['chi']
-clf = model.named_steps['clf']
+degree_dict = {'bs': 1, 'bachelor': 1, 'undergraduate': 1, 
+               'master': 2, 'graduate': 2, 'mba': 2.5, 
+               'phd': 3, 'ph.d': 3, 'ba': 1, 'ma': 2,
+               'postdoctoral': 4, 'postdoc': 4, 'doctorate': 3}
 
-feature_names = vectorizer.get_feature_names()
-feature_names = [feature_names[i] for i in chi.get_support(indices=True)]
-feature_names = np.asarray(feature_names)
 
-target_names = ['1', '2', '3', '4', '5']
-print("top 10 keywords per class:")
-for i, label in enumerate(target_names):
-    top100 = np.argsort(clf.coef_[i])[-100:]
-    print("%s: %s" % (label, " ".join(feature_names[top100])))
+degree_dict2 = {'advanced degree': 2, 'ms or': 2, 'ms degree': 2, '4 year degree': 1, 'bs/': 1, 'ba/': 1,
+                '4-year degree': 1, 'b.s.': 1, 'm.s.': 2, 'm.s': 2, 'b.s': 1, 'phd/': 3, 'ph.d.': 3, 'ms/': 2,
+                'm.s/': 2, 'm.s./': 2, 'msc/': 2, 'master/': 2, 'master\'s/': 2, 'bachelor\s/': 1}
+degree_keywords2 = set(degree_dict2.keys())
 
-print("accuracy score: " + str(model.score(X_test, y_test)))
 
-print(model.predict(['Keras Deep Learning. Logistic food!']))
+#pos_tag(tool_keywords1)
+
+ps = PorterStemmer()
+
+
+# process the job description.
+def prepare_job_desc(desc):
+    # tokenize description.
+    tokens = word_tokenize(desc)
+        
+    # Parts of speech (POS) tag tokens.
+    token_tag = pos_tag(tokens)
+    
+    # Only include some of the POS tags.
+    include_tags = ['VBN', 'VBD', 'JJ', 'JJS', 'JJR', 'CD', 'NN', 'NNS', 'NNP', 'NNPS']
+    filtered_tokens = [tok for tok, tag in token_tag if tag in include_tags]
+    
+    # stem words.
+    stemmed_tokens = [ps.stem(tok).lower() for tok in filtered_tokens]
+    return set(stemmed_tokens)
+
+df['job_description_word_set'] = df['description'].map(prepare_job_desc)
+
+# process the keywords
+tool_keywords1_set = set([ps.stem(tok) for tok in tool_keywords1]) # stem the keywords (since the job description is also stemmed.)
+tool_keywords1_dict = {ps.stem(tok):tok for tok in tool_keywords1} # use this dictionary to revert the stemmed words back to the original.
+
+skill_keywords1_set = set([ps.stem(tok) for tok in skill_keywords1])
+skill_keywords1_dict = {ps.stem(tok):tok for tok in skill_keywords1}
+
+degree_keywords1_set = set([ps.stem(tok) for tok in degree_dict.keys()])
+degree_keywords1_dict = {ps.stem(tok):tok for tok in degree_dict.keys()}
+
+tool_list = []
+skill_list = []
+degree_list = []
+
+msk = df['title'] != '' # just in case you want to filter the data.
+
+num_postings = len(df[msk].index)
+
+for i in range(num_postings):
+    job_desc = df[msk].iloc[i]['description'].lower()
+    job_desc_set = df[msk].iloc[i]['job_description_word_set']
+    
+    # check if the keywords are in the job description. Look for exact match by token.
+    tool_words = tool_keywords1_set.intersection(job_desc_set)
+    skill_words = skill_keywords1_set.intersection(job_desc_set)
+    degree_words = degree_keywords1_set.intersection(job_desc_set)
+    
+    # check if longer keywords (more than one word) are in the job description. Match by substring.
+    j = 0
+    for tool_keyword2 in tool_keywords2:
+        # tool keywords.
+        if tool_keyword2 in job_desc:
+            tool_list.append(tool_keyword2)
+            j += 1
+    
+    k = 0
+    for skill_keyword2 in skill_keywords2:
+        # skill keywords.
+        if skill_keyword2 in job_desc:
+            skill_list.append(skill_keyword2)
+            k += 1
+    
+    # search for the minimum education.
+    min_education_level = 999
+    for degree_word in degree_words:
+        level = degree_dict[degree_keywords1_dict[degree_word]]
+        min_education_level = min(min_education_level, level)
+    
+    for degree_keyword2 in degree_keywords2:
+        # longer keywords. Match by substring.
+        if degree_keyword2 in job_desc:
+            level = degree_dict2[degree_keyword2]
+            min_education_level = min(min_education_level, level)
+    
+    # label the job descriptions without any tool keywords.
+    if len(tool_words) == 0 and j == 0:
+        tool_list.append('nothing specified')
+    
+    # label the job descriptions without any skill keywords.
+    if len(skill_words) == 0 and k == 0:
+        skill_list.append('nothing specified')
+    
+    # If none of the keywords were found, but the word degree is present, then assume it's a bachelors level.
+    if min_education_level > 500:
+        if 'degree' in job_desc:
+            min_education_level = 1
+    
+    tool_list += list(tool_words)
+    skill_list += list(skill_words)
+    degree_list.append(min_education_level)
+
+# create the list of tools.
+df_tool = pd.DataFrame(data={'cnt': tool_list})
+df_tool = df_tool.replace(tool_keywords1_dict)
+
+# group some of the categories together.
+msk = df_tool['cnt'] == 'h20'
+df_tool.loc[msk, 'cnt'] = 'h2o'
+
+msk = df_tool['cnt'] == 'aws'
+df_tool.loc[msk, 'cnt'] = 'amazon web services'
+
+msk = df_tool['cnt'] == 'gcp'
+df_tool.loc[msk, 'cnt'] = 'google cloud'
+
+msk = df_tool['cnt'] == 'github'
+df_tool.loc[msk, 'cnt'] = 'git'
+
+msk = df_tool['cnt'] == 'postgressql'
+df_tool.loc[msk, 'cnt'] = 'postgres'
+
+msk = df_tool['cnt'] == 'tensor'
+df_tool.loc[msk, 'cnt'] = 'tensorflow'
+
+df_tool_top25 = df_tool['cnt'].value_counts().reset_index().rename(columns={'index': 'tool'}).iloc[:25]
+
+df_tool_top50 = df_tool['cnt'].value_counts().reset_index().rename(columns={'index': 'tool'}).iloc[:50]
+
+# create the list of skills/knowledge.
+df_skills = pd.DataFrame(data={'cnt': skill_list})
+df_skills = df_skills.replace(skill_keywords1_dict)
+
+# group some of the categories together.
+msk = df_skills['cnt'] == 'nlp'
+df_skills.loc[msk, 'cnt'] = 'natural language processing'
+
+msk = df_skills['cnt'] == 'convolutional'
+df_skills.loc[msk, 'cnt'] = 'convolutional neural network'
+
+msk = df_skills['cnt'] == 'cnn'
+df_skills.loc[msk, 'cnt'] = 'convolutional neural network'
+
+msk = df_skills['cnt'] == 'recurrent'
+df_skills.loc[msk, 'cnt'] = 'recurrent neural network'
+
+msk = df_skills['cnt'] == 'rnn'
+df_skills.loc[msk, 'cnt'] = 'recurrent neural network'
+
+msk = df_skills['cnt'] == 'knn'
+df_skills.loc[msk, 'cnt'] = 'nearest neighbors'
+
+msk = df_skills['cnt'] == 'svm'
+df_skills.loc[msk, 'cnt'] = 'support vector machine'
+
+msk = df_skills['cnt'] == 'machine vision'
+df_skills.loc[msk, 'cnt'] = 'computer vision'
+
+msk = df_skills['cnt'] == 'ab testing'
+df_skills.loc[msk, 'cnt'] = 'a/b testing'
+
+df_skills_top50 = df_skills['cnt'].value_counts().reset_index().rename(columns={'index': 'skill'}).iloc[:50]
+
+df_skills_top25 = df_skills['cnt'].value_counts().reset_index().rename(columns={'index': 'skill'}).iloc[:25]
+
+df_new_temp = pd.DataFrame(data={'keyword' : tool_list})
+#df_new = df_new_temp.unique()
+df_new = pd.DataFrame(data={'keyword' :df_new_temp['keyword'].unique()})
+#df_new['keyword'].value_counts()
+df_new.append(df_skills)
+print(df_new)
+
+# create the list of degree.
+df_degrees = pd.DataFrame(data={'cnt': degree_list})
+df_degrees['degree_type'] = ''
+
+
+msk = df_degrees['cnt'] == 1
+df_degrees.loc[msk, 'degree_type'] = 'bachelors'
+
+msk = df_degrees['cnt'] == 2
+df_degrees.loc[msk, 'degree_type'] = 'masters'
+
+msk = df_degrees['cnt'] == 3
+df_degrees.loc[msk, 'degree_type'] = 'phd'
+
+msk = df_degrees['cnt'] == 4
+df_degrees.loc[msk, 'degree_type'] = 'postdoc'
+
+msk = df_degrees['cnt'] == 2.5
+df_degrees.loc[msk, 'degree_type'] = 'mba'
+
+msk = df_degrees['cnt'] > 500
+df_degrees.loc[msk, 'degree_type'] = 'not specified'
+
+
+df_degree_cnt = df_degrees['degree_type'].value_counts().reset_index().rename(columns={'index': 'degree'}).iloc[:50]
+df_degree_cnt
