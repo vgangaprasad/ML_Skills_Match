@@ -2,6 +2,7 @@ import os
 from flask import Flask, flash, redirect, render_template, request, session, abort, send_from_directory, current_app, jsonify
 from models.keras_first_go import KerasFirstGoModel
 from clear_bash import clear_bash
+import simplejson as json
 
 #################################################
 # Flask Setup
@@ -33,15 +34,28 @@ def my_form_post():
     print (processed_text)
     return render_template('result.html', **templateData)
 
+@app.route('/submitted', methods=['POST', 'GET'])
+def handle_data():
+    # Retreive the form text using the key 'job' which is the form id
+    result = request.form['job']
+    train_model()
+    # preict by passing in form data
+    processed_text = first_go_model.prediction(result)
+    print(processed_text)
+    result = {'Job': processed_text}
+    # data = json.dumps([dict(r) for r in result])
+    return render_template('index.html', result=result, result2=result)   
 
-@app.route('/result',methods = ['POST', 'GET'])
-def result():
-   if request.method == 'POST':
-      result = request.form.getlist('Job')
-      train_model()
-      processed_text = first_go_model.prediction(result[0])
-      result = {'Job': processed_text}
-      return render_template("result.html",result = result)
+
+# @app.route('/result',methods = ['POST', 'GET'])
+# def result():
+#    if request.method == 'POST':
+#       result = request.form.getlist('Job')
+#       train_model()
+#       processed_text = first_go_model.prediction(result[0])
+#       result = {'Job': processed_text}
+#     #   return render_template("result.html",result = result)
+#      return json.dumps([dict(r) for r in result])
 
 def clear_bash():
     os.system('cls' if os.name == 'nt' else 'clear')

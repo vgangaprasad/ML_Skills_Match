@@ -18,9 +18,9 @@
       </div>
       <div class="row">
          <div class="col-lg-12">
-            <form method="POST" action="/submitted">
+            <form method="POST" action= "http://localhost:5000/submitted">
                <p>Write your skills..</p>
-               <input type="text" name="job" />
+               <input type="text" name="job" id='job' />
                <button class = "btn btn-primary" id='button' type="submit" onclick='handleClick()'>Compare Test!</button>
             </form>
 
@@ -31,37 +31,25 @@
 
 
       </div>
+
+
+      <div class="row">
+         <div class="col-lg-12">
+           <h1 class = "text-secondary text-center"> Your #1 match is ... 
+             {{ result }}
+           </h1>
+           
+          
+
+
+
+         </div>
+
+
+
+      </div>
       
-      <table class="table">
-         <thead>
-            <tr>
-               <th scope="col">#</th>
-               <th scope="col">First</th>
-               <th scope="col">Last</th>
-               <th scope="col">Handle</th>
-            </tr>
-         </thead>
-         <tbody>
-            <tr>
-               <th scope="row">1</th>
-               <td>Mark</td>
-               <td>Otto</td>
-               <td>@mdo</td>
-            </tr>
-            <tr>
-               <th scope="row">2</th>
-               <td>Jacob</td>
-               <td>Thornton</td>
-               <td>@fat</td>
-            </tr>
-            <tr>
-               <th scope="row">3</th>
-               <td>Larry</td>
-               <td>the Bird</td>
-               <td>@twitter</td>
-            </tr>
-         </tbody>
-      </table>
+  
 </body>
 
 </html>

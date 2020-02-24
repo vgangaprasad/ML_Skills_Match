@@ -70,4 +70,4 @@ class KerasFirstGoModel(object):
         encoder.fit(self.test_labels)
         result = encoder.inverse_transform(prediction)
 
-        return result[0]
+        return result;
