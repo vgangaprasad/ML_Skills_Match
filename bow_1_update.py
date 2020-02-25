@@ -21,6 +21,7 @@ import pandas as pd
 import numpy as np
 from nltk.corpus import stopwords
 import nltk
+import heapq
 nltk.download('stopwords')
 nltk.download('punkt')
 
@@ -105,7 +106,7 @@ print(max_match)
 arr = np.array(sims[query_doc_tf_idf])
 print(arr)
 
-import heapq
+
 input_list = arr
 number_of_elements = 5
 max_five = heapq.nlargest(number_of_elements, input_list)

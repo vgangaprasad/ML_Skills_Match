@@ -69,5 +69,5 @@ class KerasFirstGoModel(object):
         encoder = LabelBinarizer()
         encoder.fit(self.test_labels)
         result = encoder.inverse_transform(prediction)
-
+        print (prediction)
         return result;

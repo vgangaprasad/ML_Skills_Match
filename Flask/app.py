@@ -1,12 +1,19 @@
 import os
 from flask import Flask, flash, redirect, render_template, request, session, abort, send_from_directory, current_app, jsonify
 from models.keras_first_go import KerasFirstGoModel
+from models.skill_to_job import SkillToJob
+# import skill_to_job
 from clear_bash import clear_bash
 import simplejson as json
 
 #################################################
 # Flask Setup
 #################################################
+
+
+#################
+# Model config
+#################
 app = Flask(__name__, static_folder='static', static_url_path='')
 
 
@@ -14,9 +21,11 @@ app = Flask(__name__, static_folder='static', static_url_path='')
 
 def train_model():
     global first_go_model
+    global skill_to_job
 
     print("Train the model")
     first_go_model = KerasFirstGoModel()
+    skill_to_job = SkillToJob()
     
 
 @app.route('/<path:path>')
@@ -37,14 +46,19 @@ def my_form_post():
 @app.route('/submitted', methods=['POST', 'GET'])
 def handle_data():
     # Retreive the form text using the key 'job' which is the form id
-    result = request.form['job']
+    result_1 = request.form['job1']
+    result_2 = request.form['job2']
+    result_3 = request.form['job3']
+    result_4 = request.form['job4']
     train_model()
+    list_prediction = skill_to_job.prediction(result_1)
+    print(list_prediction)
     # preict by passing in form data
     processed_text = first_go_model.prediction(result)
     print(processed_text)
     result = {'Job': processed_text}
     # data = json.dumps([dict(r) for r in result])
-    return render_template('index.html', result=result, result2=result)   
+    return render_template('index.html', result=processed_text[0])   
 
 
 # @app.route('/result',methods = ['POST', 'GET'])

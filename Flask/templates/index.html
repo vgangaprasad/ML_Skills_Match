@@ -17,20 +17,53 @@
          </div> 
       </div>
       <div class="row">
-         <div class="col-lg-12">
+         <div class="col-sm-3">
             <form method="POST" action= "http://localhost:5000/submitted">
-               <p>Write your skills..</p>
-               <input type="text" name="job" id='job' />
-               <button class = "btn btn-primary" id='button' type="submit" onclick='handleClick()'>Compare Test!</button>
+               <p>Programming Language 1</p>
+               <input type="text" name="job" id='job1' />
             </form>
-
-
 
          </div>
 
-
-
+         <div class="col-sm-3">
+            <form method="POST" action= "http://localhost:5000/submitted">
+               <p>Programming Language 2 </p>
+               <input type="text" name="job" id='job2' />
+            </form>
+            
+         </div>
       </div>
+
+      <div class="row">
+         <div class="col-sm-3">
+            <form method="POST" action= "http://localhost:5000/submitted">
+               <p>Programming Language 3 </p>
+               <input type="text" name="job" id='job3' />
+            </form>
+
+         </div>
+
+         <div class="col-sm-3">
+            <form method="POST" action= "http://localhost:5000/submitted">
+               <p>Programming Language 4</p>
+               <input type="text" name="job" id='job4' />
+               
+            </form>
+            
+         </div>
+      </div>
+
+
+      <div class="row">
+         <div class="col-lg-12">
+            <button class = "btn btn-primary" id='button' type="submit" onclick='handleClick()'>Compare Test!</button>
+           
+         
+         </div>
+      </div>
+
+
+   
 
 
       <div class="row">
@@ -39,17 +72,10 @@
              {{ result }}
            </h1>
            
-          
-
-
-
+         
          </div>
-
-
-
       </div>
       
-  
 </body>
 
 </html>
