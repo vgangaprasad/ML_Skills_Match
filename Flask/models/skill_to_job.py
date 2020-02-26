@@ -85,7 +85,7 @@ class SkillToJob(object):
             s += len(i)
         # print(s)
         global sims
-        sims = gensim.similarities.Similarity('users\\denisc\desktop\sim_test',tf_idf[corpus],
+        sims = gensim.similarities.Similarity('resources\sim_test',tf_idf[corpus],
                                             num_features=len(dictionary))
         # print(sims)
         # print(type(sims))
