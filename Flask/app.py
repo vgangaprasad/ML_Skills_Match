@@ -2,6 +2,7 @@ import os
 from flask import Flask, flash, redirect, render_template, request, session, abort, send_from_directory, current_app, jsonify
 from models.keras_first_go import KerasFirstGoModel
 from models.skill_to_job import SkillToJob
+from models.main import ResumeToSkill
 # import skill_to_job
 from clear_bash import clear_bash
 import simplejson as json
@@ -22,10 +23,13 @@ app = Flask(__name__, static_folder='static', static_url_path='')
 def train_model():
     global first_go_model
     global skill_to_job
-
+    global resume_to_skill 
+    
     print("Train the model")
-    first_go_model = KerasFirstGoModel()
+    # first_go_model = KerasFirstGoModel()
     skill_to_job = SkillToJob()
+    #create instances of each class from the model
+    resume_to_skill = ResumeToSkill()
     
 
 @app.route('/<path:path>')
@@ -38,7 +42,7 @@ def welcome():
 
 @app.route('/', methods=['Get', 'POST'])
 def my_form_post():
-    text = request.form.get('job')
+    text = request.form.get('job1')
     processed_text = text.upper()
     print (processed_text)
     return render_template('result.html', **templateData)
@@ -46,19 +50,24 @@ def my_form_post():
 @app.route('/submitted', methods=['POST', 'GET'])
 def handle_data():
     # Retreive the form text using the key 'job' which is the form id
-    result_1 = request.form['job1']
-    result_2 = request.form['job2']
-    result_3 = request.form['job3']
-    result_4 = request.form['job4']
-    train_model()
-    list_prediction = skill_to_job.prediction(result_1)
-    print(list_prediction)
-    # preict by passing in form data
-    processed_text = first_go_model.prediction(result)
-    print(processed_text)
-    result = {'Job': processed_text}
-    # data = json.dumps([dict(r) for r in result])
-    return render_template('index.html', result=processed_text[0])   
+    # retrieve the form only if a request is made
+    if request.method == "POST":
+        result_1 = request.form['job1']
+        
+        train_model()
+        results = resume_to_skill.compare_job_skills(result_1)
+        print (results)
+        # results is an array of strings of some length, but skill to job requires one big string
+        # so we convert results back to a big string via .join 
+        skills_string = " ".join(results)
+        jobs = skill_to_job.prediction(skills_string)
+        # print ("######your skill are:###############")
+        # print(result_1)
+
+    
+        # result = {'Job': processed_text}
+        # data = json.dumps([dict(r) for r in result])
+    return render_template('index.html', results=results, jobs=jobs)   
 
 
 # @app.route('/result',methods = ['POST', 'GET'])
@@ -86,7 +95,8 @@ if __name__ == "__main__":
     print("Do you want to start the application or test the model? ")
     print("\n")
     print("NOTE: Press 'app' for application of 'model' for model...")
-    mode = input()
+    # mode = 'input()'
+    mode = 'app'
 
     if mode=='app':
 

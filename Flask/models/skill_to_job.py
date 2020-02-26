@@ -20,6 +20,8 @@ import numpy as np
 from nltk.corpus import stopwords
 import nltk
 import heapq
+import requests
+import io
 nltk.download('stopwords')
 nltk.download('punkt')
 
@@ -34,7 +36,9 @@ import urllib
 
 class SkillToJob(object):
     def __init__(self):
+        global csv_data
         csv_data = None
+        global url
         url = "https://raw.githubusercontent.com/vgangaprasad/ML_Skills_Match/master/csv_ML.csv"
         webpage = urllib.request.urlopen(url)
         rows = []
@@ -63,7 +67,7 @@ class SkillToJob(object):
                 print(len(row[9]))
                 rows.append(row) """
 
-
+        global dictionary
         dictionary = gensim.corpora.Dictionary(gen_docs)
         #print(dictionary[5])
         #print(dictionary.token2id['road'])
@@ -73,39 +77,39 @@ class SkillToJob(object):
 
         corpus = [dictionary.doc2bow(gen_doc) for gen_doc in gen_docs]
         #print(corpus)
-
+        global tf_idf
         tf_idf = gensim.models.TfidfModel(corpus)
-        print(tf_idf)
+        # print(tf_idf)
         s = 0
         for i in corpus:
             s += len(i)
-        print(s)
-
+        # print(s)
+        global sims
         sims = gensim.similarities.Similarity('users\\denisc\desktop\sim_test',tf_idf[corpus],
                                             num_features=len(dictionary))
-        print(sims)
-        print(type(sims))
-        print(dir(gensim))
+        # print(sims)
+        # print(type(sims))
+        # print(dir(gensim))
     
     
 
 
-    def prediction (skill_one, skill_two, skill_three, skill_four):
-        query_doc = [w.lower() for w in word_tokenize(f"{skill_one} {skill_two} {skill_three} {skill_four}")]
-        print(query_doc)
+    def prediction (self, skills_string):
+        query_doc = [w.lower() for w in word_tokenize(skills_string)]
+        # print(query_doc)
         query_doc_bow = dictionary.doc2bow(query_doc)
-        print(query_doc_bow)
+        # print(query_doc_bow)
         query_doc_tf_idf = tf_idf[query_doc_bow]
-        print(query_doc_tf_idf)
-        print(sims)
+        # print(query_doc_tf_idf)
+        # print(sims)
         max_match = (sims[query_doc_tf_idf].max())
-        print(max_match)
+        # print(max_match)
         arr = np.array(sims[query_doc_tf_idf])
-        print(arr)
+        # print(arr)
         input_list = arr
         number_of_elements = 5
         max_five = heapq.nlargest(number_of_elements, input_list)
-        print(max_five)
+        # print(max_five)
 
         max_one = max_five[0]
         max_two = max_five[1]
@@ -116,21 +120,23 @@ class SkillToJob(object):
         for index, item in enumerate(sims[query_doc_tf_idf]):
             if max_one == item:
                 index_one = index
-                print(item, index_one)
+                # print(item, index_one)
             elif max_two == item:
                 index_two = index
-                print(item, index_two)
+                # print(item, index_two)
             elif max_three == item:
                 index_three = index
-                print(item, index_three)
+                # print(item, index_three)
             elif max_four == item:
                 index_four = index
-                print(item, index_four)
+                # print(item, index_four)
             elif max_five == item:
                 index_five = index
-                print(item, index_five)
+                # print(item, index_five)
 
-        df = pd.read_csv("csv_ML.csv")
+        s=requests.get(url).content
+        df=pd.read_csv(io.StringIO(s.decode('utf-8')))
+        # df = pd.read_csv(csv_data)
 
         rec_job1 = df.iloc[index_one]['title']
         rec_job2 = df.iloc[index_two]['title']
