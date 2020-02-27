@@ -47,6 +47,10 @@ def my_form_post():
     print (processed_text)
     return render_template('result.html', **templateData)
 
+# @app.route('/api/jobs', methods=['Get', 'POST'])
+# def get_jobs():
+
+
 @app.route('/submitted', methods=['POST', 'GET'])
 def handle_data():
     # Retreive the form text using the key 'job' which is the form id
@@ -61,6 +65,7 @@ def handle_data():
         # so we convert results back to a big string via .join 
         skills_string = " ".join(results)
         jobs = skill_to_job.prediction(skills_string)
+        
         # print ("######your skill are:###############")
         # print(result_1)
 

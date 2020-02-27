@@ -99,12 +99,12 @@ class ResumeToSkill(object):
                 min_education_level = min(min_education_level, level)
         
         # label the job descriptions without any tool keywords.
-        if len(skills_tool_words) == 0 and j == 0:
-            skills_tool_list.append('nothing specified')
+        # if len(skills_tool_words) == 0 and j == 0:
+        #     skills_tool_list.append('nothing specified')
         
-        # label the job descriptions without any skill keywords.
-        if len(skills_skill_words) == 0 and k == 0:
-            skills_skill_list.append('nothing specified')
+        # # label the job descriptions without any skill keywords.
+        # if len(skills_skill_words) == 0 and k == 0:
+        #     skills_skill_list.append('nothing specified')
         
         # If none of the keywords were found, but the word degree is present, then assume it's a bachelors level.
         if min_education_level > 500:

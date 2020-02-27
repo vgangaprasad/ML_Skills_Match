@@ -3,6 +3,129 @@
 
 <head>
    <title> Job Finder</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+   <link rel="stylesheet" type="text/css" href="../css/theme.css">
+</head>
+
+<body>
+
+   <style>
+      table,
+      th,
+      td {
+         border: 1px solid black;
+         border-collapse: collapse;
+      }
+
+      th,
+      td {
+         padding: 5px;
+         text-align: left;
+      }
+   </style>
+   <div class="container">
+
+      <div class="row">
+         <div class="jumbotron">
+            <h1 class="text-secondary text-center">Skills and Jobs Match using NLP</h1>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-6">
+            <form method="POST" action="http://localhost:5000/submitted">
+               
+             <p><font size="5"> Find Jobs:</font></p>
+
+               
+               <textarea id="job1" name="job1" rows="4" cols="180">    
+               </textarea>
+               <button class="btn btn-primary" id='button' type="submit" onclick='handleClick()'>Search</button>
+            </form>
+
+         </div>
+
+
+
+         <div class="row">
+            <div class="col-lg-12">
+
+
+
+            </div>
+         </div>
+
+
+
+
+
+         <div class="row">
+            <div class="col-lg-12">
+
+               <table style="width:100%" , class="table table-dark">
+                  <thead>
+                     <tr>
+
+                        <tr>
+                           <th>
+                              <h1>Matching ML skills</h1>
+                                 {% for result in results %}
+                                     <p><font size="3">{{result}}</font> </p>
+                                   {% endfor %}
+                           
+                           </th>
+                        </tr>
+                        
+                           <th><h1>Recommended Positions</h1>
+                           
+                              <!-- {% for job in jobs %}
+                                 <p><font size="3">{{job}}</font> </p>
+                              {% endfor %} -->
+                           </th>    
+                              
+
+                     </tr>
+                     {% for item in jobs %}
+
+                        
+                     <tr>
+                        <td> {{ item }} </td>
+
+                     </tr>
+                     <tr>
+                        <td> {{ item[loop.index1] }} </td>
+
+                     </tr>
+                     <tr>
+                        <td> {{ item[loop.index2] }} </td>
+
+                     </tr>
+                     
+                     {% endfor %}
+                    
+                  </thead>
+
+               </table>
+
+               <tbody>
+
+
+
+               </tbody>
+
+
+
+            </div>
+         </div>
+
+</body>
+
+</html>
+<!-- <!DOCTYPE html>
+<html>
+
+<head>
+   <title> Job Finder</title>
    <meta name"viewport" content="width=device-width, initial-scale=1">
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
    <link rel="stylesheet" type="text/css" href="../css/theme.css">
@@ -43,22 +166,38 @@
          <div class="row">
             <div class="col-lg-12">
                <h1 class="text-secondary text-center"> You have the following skills: {{results}}
-               
+
                </h1>
 
 
-               <h1 class="text-secondary text-center"> We recommend the following positions: {{jobs}}
                
+
                </h1>
 
                <table class="table table-dark">
                   <thead>
                      <tr>
-                        <th scope="col">Skill 1</th>
-                        <th scope="col">Skill 2</th>
-                        <th scope="col">Skill 3</th>
-                        <th scope="col">Skill 4</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Location</th>
+
                      </tr>
+                     {% for item in jobs %}
+
+                        
+                     <tr>
+                        <td> {{ item }} </td>
+
+                     </tr>
+                     <tr>
+                        <td> {{ item[loop.index1] }} </td>
+
+                     </tr>
+                     <tr>
+                        <td> {{ item[loop.index2] }} </td>
+
+                     </tr>
+                     
+                     {% endfor %}
                   </thead>
                   <tbody>
 
@@ -77,4 +216,7 @@
 
 </body>
 
-</html>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.11.0/d3.js"></script>
+<script src="static/js/app.js"></script> -->
+
+</html> -->

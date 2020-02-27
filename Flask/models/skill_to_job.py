@@ -143,10 +143,10 @@ class SkillToJob(object):
         rec_job3 = df.iloc[index_three]['title']
         rec_job4 = df.iloc[index_four]['title']
         rec_job5 = df.iloc[index_five]['title']
+        job_arr = [rec_job1, rec_job2, rec_job3, rec_job4, rec_job5]
 
 
-
-        return [rec_job1, rec_job2, rec_job3, rec_job4, rec_job5]
+        return job_arr
 
 
 
