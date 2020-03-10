@@ -6,120 +6,92 @@
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
    <link rel="stylesheet" type="text/css" href="../css/theme.css">
+   <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"> -->
+
+<style type="text/css">
+
+body {
+  background-color: lightblue;
+}
+
+.jumbotron{
+margin-top: 15px;
+padding: 17px;
+color: #990000;
+background-color: lightblue;
+}
+</style>
 </head>
 
 <body>
-
    <style>
+   	  background-color: blue;
+   	  table{
+   	  	border-collapse: collapse;
+   	  }
       table,
       th,
       td {
          border: 1px solid black;
          border-collapse: collapse;
       }
-
       th,
       td {
          padding: 5px;
          text-align: left;
       }
    </style>
+
+
    <div class="container">
 
       <div class="row">
-         <div class="jumbotron">
-            <h1 class="text-secondary text-center">Skills and Jobs Match using NLP</h1>
+         <div class="jumbotron jumbotron-fluid">
+            <h2 class="display-4 text-secondary text-center">Job Recommendation using NLP</h2>
+         </div>
+      </div>
+
+      <div class="row">
+         <div class="col-lg-12">
+            <form method="POST" action="http://localhost:5000/submitted">
+             <h1> Find Jobs:</h1>
+               <textarea id="job1" name="job1" rows="10"  cols="60">    
+               </textarea>
+            </br></br>
+               <button class="btn btn-primary" id='button' type="submit">Search</button>
+            </form>
+         </div>
+
+         <div class="col-lg-12">
+            <h1> Matching ML Skills </h1>
+
+            <table style="width:100%" , class="table table-dark">
+            <tbody>
+               {% for result in results %}
+               <tr>
+                  <p><font size="3">{{result}}</font> </p>
+               </tr>
+               {% endfor %}
+            </tbody>
+            </table>
+         </br>
          </div>
       </div>
       <div class="row">
-         <div class="col-md-6">
-            <form method="POST" action="http://localhost:5000/submitted">
-               
-             <p><font size="5"> Find Jobs:</font></p>
-
-               
-               <textarea id="job1" name="job1" rows="4" cols="180">    
-               </textarea>
-               <button class="btn btn-primary" id='button' type="submit" onclick='handleClick()'>Search</button>
-            </form>
-
-         </div>
-
-
-
-         <div class="row">
-            <div class="col-lg-12">
-
-
-
-            </div>
-         </div>
-
-
-
-
-
-         <div class="row">
-            <div class="col-lg-12">
-
-               <table style="width:100%" , class="table table-dark">
-                  <thead>
-                     <tr>
-
-                        <tr>
-                           <th>
-                              <h1>Matching ML skills</h1>
-                                 {% for result in results %}
-                                     <p><font size="3">{{result}}</font> </p>
-                                   {% endfor %}
-                           
-                           </th>
-                        </tr>
-                        
-                           <th><h1>Recommended Positions</h1>
-                           
-                              <!-- {% for job in jobs %}
-                                 <p><font size="3">{{job}}</font> </p>
-                              {% endfor %} -->
-                           </th>    
-                              
-
-                     </tr>
-                     {% for item in jobs %}
-
-                        
-                     <tr>
-                        <td> {{ item }} </td>
-
-                     </tr>
-                     <tr>
-                        <td> {{ item[loop.index1] }} </td>
-
-                     </tr>
-                     <tr>
-                        <td> {{ item[loop.index2] }} </td>
-
-                     </tr>
-                     
-                     {% endfor %}
-                    
-                  </thead>
-
-               </table>
-
+            <table style="width:100%" , class="table table-dark">
+            <h1> Recommended Positions </h1>
                <tbody>
-
-
-
+						{% for item in jobs %}
+						<tr>
+                     <td>
+                        {{ item }}
+                     </td>
+                  </tr>
+						{% endfor %}
                </tbody>
-
-
-
-            </div>
-         </div>
-
+            </table>
+      </div>
 </body>
-
 </html>
 <!-- <!DOCTYPE html>
 <html>
@@ -219,4 +191,4 @@
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.11.0/d3.js"></script>
 <script src="static/js/app.js"></script> -->
 
-</html> -->
+<!-- </html> -->
