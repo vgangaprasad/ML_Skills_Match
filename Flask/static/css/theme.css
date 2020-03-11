@@ -1,6 +1,8 @@
 body {
-   background-image: url("../Photos/background_img.jpg");
+   /* background-image: url("../Photos/nlp.png");  */
    background-color: #cccccc;
+   background-repeat: no-repeat;
+   background-size: 100% 100%;;
 }
 
 div.a {
