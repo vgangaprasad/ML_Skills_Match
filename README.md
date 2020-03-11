@@ -41,8 +41,8 @@ Here are the things we did for this Job recommender System.
 
 ##Here are some of the images from the Application
 
-### US Map
-![US Map](images/02-USMap.JPG)
+### Skills Box (Place where you enter your resume or skills that have)
+![Skills Box](Images/02_data(resume)_in_text_box.JPG)
 
 <br>
 
