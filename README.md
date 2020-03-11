@@ -51,21 +51,7 @@ Here are the things we did for this Job recommender System.
 
 <br>
 
-### Donut Chart for the year selected from Bar Chart or Drop Down
-![Donut Chart](images/04-DonutChart.JPG)
+### Main image - Recommended Jobs
+![Recommended Jobs](Images/04_recommended_jobs.JPG)
 
 <br>
-
-### Line Chart for the Industry selected from Donut Chart or Drop Down
-![US Map](images/05-LineChart.JPG)
-
-
-## Contributors
-
--	Bhumika Sharma
--	Chris Janssen
--	Cong Tran
-- Denis Cohen
--	Imran Bawany
--	Vijaybabu Gangaprasad
-
