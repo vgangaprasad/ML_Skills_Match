@@ -69,4 +69,4 @@ def handle_data():
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(use_reloader=False)
+    app.run(host='0.0.0.0')
