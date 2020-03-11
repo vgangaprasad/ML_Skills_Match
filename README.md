@@ -46,8 +46,8 @@ Here are the things we did for this Job recommender System.
 
 <br>
 
-### Bar Chart for the state selected from the Map or Drop Down
-![Bar Chart](images/03-BarChart.JPG)
+### Matching Skills
+![Matching Skills](Images/03_matching_skills.JPG)
 
 <br>
 
